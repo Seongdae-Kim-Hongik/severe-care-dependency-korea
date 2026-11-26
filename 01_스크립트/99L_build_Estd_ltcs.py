@@ -7,7 +7,7 @@
 #  Output: 02_패널/LTCS_Estd3.csv; checks in 04_분석/LTCS/gate/E/
 import os, sys, json, glob, sqlite3, importlib.util, unicodedata
 import numpy as np, pandas as pd
-HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); PAN = os.path.join(ROOT, "02_패널"); SEL = os.environ.get("ST_OUT_SEL", os.path.join(ROOT, "04_분석", "LTCS", "gate", "E")); os.makedirs(SEL, exist_ok=True)
+HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); PAN = os.path.join(ROOT, "02_패널"); os.makedirs(PAN, exist_ok=True); SEL = os.environ.get("ST_OUT_SEL", os.path.join(ROOT, "04_분석", "LTCS", "gate", "E")); os.makedirs(SEL, exist_ok=True)
 RAW = os.environ["ST_KOSIS_RAW"]
 DB = os.environ["ST_REF_DATASET"]
 def _load(nm, f):

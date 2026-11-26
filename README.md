@@ -2,7 +2,7 @@
 
 Analysis code for a district-level study of severe care dependency in later life in South Korea: residents aged 65 and older certified at long-term care insurance grade 1 or 2 across the 229 districts (si-gun-gu), 2011-2024, analysed with Bayesian spatiotemporal models (R-INLA, BYM2).
 
-This code is released under the MIT licence. Version 1.0.0. Archived copy: https://doi.org/10.5281/zenodo.24552898.
+This code is released under the MIT licence. Version 1.0.1. Archived copy: https://doi.org/10.5281/zenodo.24556722 (all versions: https://doi.org/10.5281/zenodo.24552897). Version 1.0.1 adds the master-panel script `45_master_from_refdataset.py` and fixes folder creation and multiverse deferral so that the code runs from a fresh copy.
 
 ## Contents
 
@@ -40,7 +40,7 @@ The principal model (`S1_narrative_full`, version `std3`) contains 10 hypothesis
 | `E_std (E_sex, E_std_age, E_crude)` | offset | Expected count, indirect standardisation by 2 sexes x 5 age bands (alternatives: sex-only, age-only, crude) | Derived: KOSIS DT_35006_N036 national certifications by sex and age; resident population |
 | `ltc_hospitals_per100k_65` | hypothesis | Long-term care hospitals per 100 000 residents aged 65+ | Health-resource statistics |
 | `hospitals_per100k` | hypothesis | Hospitals and general hospitals per 100 000 residents | Health-resource statistics |
-| `tertiary_educated_share` | hypothesis | Tertiary-educated share | Population and housing census |
+| `tertiary_educated_share` | hypothesis | University-educated share: four-year university or higher (current students and non-completers included, junior college excluded) among residents aged 6+ | Population and housing census (KOSIS DT_1PM1501, DT_1PM2001), interpolated between censuses |
 | `living_alone_elderly` | hypothesis | Older single-person household share | Population and housing census |
 | `mort_stroke_asr` | hypothesis | Cerebrovascular disease mortality, age-standardised | Cause-of-death statistics |
 | `alz_death_sir_ma3` | hypothesis | Alzheimer disease death SIR, 3-year moving average | Cause-of-death statistics |
@@ -67,6 +67,12 @@ Sensitivity versions (`sets_LTCS_<version>.json`): `s577` queen contiguity graph
 | `ST_GRAPH` | Principal adjacency graph in INLA graph format (229 districts, 593 edges, boundary-file order) |
 | `ST_VER`, `TAG` | Model version (`std3` or a sensitivity version) and outcome tag (`LTCS`), set by the run scripts |
 | `SK_RSLOTS` | Number of concurrent R jobs in `rslot.sh` (default 3) |
+| `ST_THREADS` | INLA threads per model (the run scripts use 1) |
+| `ST_MV_DEFER`, `ST_MV_PARTS` | `ST_MV_DEFER=1` postpones the 200-subset multiverse in `81_fit_inla_ltcs.R`; `ST_MV_PARTS=k` with `ST_MV_RANGE=a-b` runs it in k blocks that the main run then merges |
+| `ST_MV_N`, `ST_SENS_LITE` | Multiverse size and a light mode used for the sensitivity versions (set in `run_ltcs_chain.sh`) |
+| `EXG` | Group of additional analyses run by `88X_ltcs_extra.R` (`A`, `B`, `C`) |
+
+To unpack the archive on macOS, use `ditto -x -k <zip> <folder>` or Python `zipfile`; the system `unzip` may fail on the Korean folder names.
 
 ## Reproduction order
 
@@ -76,7 +82,8 @@ Run from `ST_ROOT` after setting the environment variables above.
 |---|---|---|
 | 0 | `00_선별/01_스크립트/kosis_fetch.py` | Download of the KOSIS source tables (own API key in `KOSIS_API_KEY`) into `ST_KOSIS_RAW` |
 | 1 | `00_선별/01_스크립트/99S_build_E.py`, `99S_judgement_gate.py` | Screening-stage counts for the candidate outcomes and the judgement check (grade composition by year, new grades in 2014 and 2018, year-to-year district rank correlation) |
-| 2 | `01_스크립트/99L_build_Estd_ltcs.py` (uses `40_region_crosswalk.py`, `50_build_master_panel.py`) | Outcome counts (grade 1-2 certifications, residents aged 65+), offset population and expected counts by indirect standardisation (2 sexes x 5 age bands); alternative expected counts |
+| 1b | `01_스크립트/45_master_from_refdataset.py` | District-year master panel `02_패널/MASTER_시군구_연도_wide.parquet` read from table `source_master_all_years` of `ST_REF_DATASET` (the same table that `50_build_master_panel.py` builds from source-specific wide files, which are not distributed) |
+| 2 | `01_스크립트/99L_build_Estd_ltcs.py` (imports `40_region_crosswalk.py` and `50_build_master_panel.py`, which read `ST_DATA_ROOT` at import, so set it even though this step does not open the file) | Outcome counts (grade 1-2 certifications, residents aged 65+), offset population and expected counts by indirect standardisation (2 sexes x 5 age bands); alternative expected counts |
 | 3 | `04_분석/LTCS/gate/code/06_village_corrections.py`, `04_분석/LTCS/build_pool_from_sqlite_ltcs.py`, `build_pool_ltcs_additions.py`, `gate/code/11_ltcs_cell_gate.py` | District-year covariate pool from the reference dataset and the cell-level data check |
 | 4 | `04_분석/LTCS/make_pool_sets_ltcs.py` | Model settings `sets_LTCS_*.json` and hypothesis table, hashed (SHA-256) before the covariate models were fitted |
 | 5 | `ST_VER=std3 python3 01_스크립트/80_build_disease_panel_v.py LTCS` | Analytic panel (imputation counts, VIF) |

@@ -145,7 +145,7 @@ if(!LITE&&!file.exists(F6m)){set.seed(2);my<-do.call(rbind,lapply(sort(unique(DD
   data.frame(year=y,moran_I=round(mm$statistic,4),p_perm=round(mm$p.value,4),n_regions=nrow(d),crude_rate_per100k=round(sum(d$cases)/sum(d$population)*1e5,1))}));write.csv(my,F6m,row.names=FALSE);LOG("S6 done: Moran max %.3f (%d)",max(my$moran_I),my$year[which.max(my$moran_I)])}
 
 F7s<-file.path(RES,"S7_multiverse_specs.csv");F7r<-file.path(RES,"S7_multiverse_results.csv");F7<-file.path(RES,"S7_multiverse_summary.csv")
-DEFER<-Sys.getenv("ST_MV_DEFER")=="1"&&length(list.files(RES,pattern="^S7_multiverse_results_part_.*\\.csv\\.done$"))<as.integer(Sys.getenv("ST_MV_PARTS",unset="0"))
+DEFER<-Sys.getenv("ST_MV_DEFER")=="1"&&length(list.files(RES,pattern="^S7_multiverse_results_part_.*\\.csv\\.done$"))<max(1L,as.integer(Sys.getenv("ST_MV_PARTS",unset="1")))
 if(DEFER)LOG("S7 deferred (parts not done) — rerun later without ST_MV_DEFER to merge")
 if(!DEFER&&!file.exists(F7)){set.seed(20261019);POOL<-CAND;inla.setOption(inla.timeout=600);LOG("S7 inla.timeout=600s per spec (failed/timeout specs are skipped and logged)")
   if(!file.exists(F7s)){specs<-list();keys<-character(0);while(length(specs)<NMV){inc<-POOL[runif(length(POOL))<0.5];if(length(inc)<1)next;k<-paste(sort(inc),collapse="|");if(length(POOL)>=5&&k%in%keys)next;specs[[length(specs)+1]]<-inc;keys<-c(keys,k)}

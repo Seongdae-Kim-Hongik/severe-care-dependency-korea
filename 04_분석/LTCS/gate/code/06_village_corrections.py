@@ -4,6 +4,7 @@
 import sqlite3, os, json, unicodedata
 import pandas as pd, numpy as np
 B = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.makedirs(os.path.join(B, "tables"), exist_ok=True)
 DB = os.environ["ST_REF_DATASET"]
 NFC = lambda s: unicodedata.normalize("NFC", s) if isinstance(s, str) else s
 c = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
