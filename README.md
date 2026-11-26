@@ -2,7 +2,7 @@
 
 Analysis code for a district-level study of severe care dependency in later life in South Korea: residents aged 65 and older certified at long-term care insurance grade 1 or 2 across the 229 districts (si-gun-gu), 2011-2024, analysed with Bayesian spatiotemporal models (R-INLA, BYM2).
 
-This code is released under the MIT licence. Version 1.0.0.
+This code is released under the MIT licence. Version 1.0.0. Archived copy: https://doi.org/10.5281/zenodo.24552898.
 
 ## Contents
 

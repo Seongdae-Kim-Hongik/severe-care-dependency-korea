@@ -5,10 +5,10 @@
 import os, sys, json, glob, sqlite3, importlib.util, unicodedata
 import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); PAN = os.path.join(ROOT, "02_패널"); SEL = os.path.dirname(ROOT)
-RAW = os.path.join(SEL, "kosis_raw")
+RAW = os.environ["ST_KOSIS_RAW"]
 DB = os.environ["ST_REF_DATASET"]
 def _load(nm, f):
-    s = importlib.util.spec_from_file_location(nm, os.path.join(HERE, f)); m = importlib.util.module_from_spec(s); s.loader.exec_module(m); return m
+    s = importlib.util.spec_from_file_location(nm, os.path.join(SEL, "01_스크립트", f)); m = importlib.util.module_from_spec(s); s.loader.exec_module(m); return m
 FBDZIP = os.environ.get("ST_FBDZIP"); cw = _load("cw", "40_region_crosswalk.py"); m50 = _load("m50", "50_build_master_panel.py")
 NFC = lambda s: unicodedata.normalize("NFC", str(s))
 assert os.environ.get("ST_FBDZIP"), "ST_FBDZIP(창원 2023 교정 인구 폴더)를 지정"
@@ -20,7 +20,7 @@ K2R = dict(zip(base.key, base.fbd_region))
 BANDS18 = [f"{lo}-{lo+4}" for lo in range(0, 85, 5)] + ["85+"]; OLD = ["65-69", "70-74", "75-79", "80-84", "85+"]
 SIDO_HDR = {k for k in cw.SIDO_STD if len(k) >= 3 and (k.endswith("시") or k.endswith("도"))}
 FIVE = [f"{lo}-{lo+4}세" for lo in range(0, 85, 5)]; OLD85 = ["85-89세", "90-94세", "95-99세", "100세 이상"]
-EXTRA = {("충청북도", "청원군"): "충청북도|청주시"}; rows = []
+EXTRA = {("충청북도", "청원군"): "충청북도|청주시"}; rows = []; NMISS85 = []
 for y in YEARS:
     d = pd.read_csv(os.path.join(FBDZIP, f"{y}.csv"), encoding="cp949", dtype=str)
     d["행정구역별"] = d["행정구역별"].map(NFC).str.strip(); d["연령별"] = d["연령별"].map(NFC).str.strip()
@@ -42,9 +42,12 @@ for y in YEARS:
         for s in SEXES:
             a = g.set_index("연령별")[s]
             if pd.isna(a.get("계", np.nan)): continue
-            f = a.reindex(FIVE); o = a.reindex(OLD85).fillna(0); assert f.notna().all(), (y, nm, s)
+            f = a.reindex(FIVE); o = a.reindex(OLD85); assert f.notna().all(), (y, nm, s)
+            NMISS85.append(int(o.isna().sum())); assert abs(a["계"] - f.sum() - o.fillna(0).sum()) < 0.5, ("missing 85+ cells are not true zeros", y, nm, s, a["계"], f.sum(), o.sum())
+            o = o.where(o.notna(), 0.0)
             rows.append({"year": y, "sex": s, "key": NFC(key), **{b: f[b + "세"] for b in BANDS18[:-1]}, "85+": o.sum()})
 POP = pd.DataFrame(rows).groupby(["year", "key", "sex"], as_index=False).sum(numeric_only=True)
+print(f"[99S] missing 85+ age cells: {sum(NMISS85)} in {len(NMISS85)} blocks; each block total equals the sum of its age bands (true zeros)")
 assert set(POP.key) >= PKEYS, sorted(PKEYS - set(POP.key))
 cwn = POP[(POP.key == NFC("경상남도|창원시")) & (POP.year == 2023)][BANDS18].sum().sum()
 print(f"[99S] 창원 2023 인구 {cwn:,.0f} (정답 1,009,038)"); assert abs(cwn - 1009038) < 1

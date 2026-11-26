@@ -378,7 +378,7 @@ def main():
     for name, (agg, meta, src) in aggs.items():
         L.append(f"| {src['label']} | {src['prefix']} | {', '.join(f for f in src['files'] if _exists(f))} | {len(meta['var_cols'])} | {len(meta['count_cols'])} | {len(meta['ratio_cols'])} | {len(agg):,} | {meta['n_multi']} |")
     L += ["", "## 원천별 매칭된 시군구 수(연도별)", ""]
-    cov = pd.DataFrame({name: pd.Series(meta["match_by_year"]) for name, (agg, meta, src) in aggs.items()}).reindex(years).fillna(0).astype(int)
+    cov = pd.DataFrame({name: pd.Series(meta["match_by_year"]) for name, (agg, meta, src) in aggs.items()}).reindex(years).fillna(0).astype(int)   # match-count table only: a year without matched source rows has 0 matches (no data value is filled)
     L += ["| year | " + " | ".join(cov.columns) + " |", "|---|" + "---|" * len(cov.columns)]
     L += [f"| {y} | " + " | ".join(str(v) for v in cov.loc[y]) + " |" for y in cov.index]
     L += ["", "## 연도 커버리지(원천×연도, 해당 원천 변수 중 하나라도 값 있는 시군구 수)", ""]
@@ -387,7 +387,7 @@ def main():
         cols = [src["prefix"] + c for c in meta["var_cols"]]
         cov2[name] = master[master[cols].notna().any(axis=1)].groupby("year").key.nunique()
     cov2["population"] = master[master.population.notna()].groupby("year").key.nunique()
-    cov2 = pd.DataFrame(cov2).reindex(years).fillna(0).astype(int)
+    cov2 = pd.DataFrame(cov2).reindex(years).fillna(0).astype(int)   # match-count table only (no data value is filled)
     L += ["| year | " + " | ".join(cov2.columns) + " |", "|---|" + "---|" * len(cov2.columns)]
     L += [f"| {y} | " + " | ".join(str(v) for v in cov2.loc[y]) + " |" for y in cov2.index]
     L += ["", "## 미매칭 (sido, sigungu) — 버리지 않고 MASTER_병합_unmatched.csv 에도 저장(마스터에는 들어가지 않음)", ""]

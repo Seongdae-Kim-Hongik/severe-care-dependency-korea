@@ -4,7 +4,7 @@
 #  Input: ST_KOSIS_RAW, 02_패널/<TAG>_Estd3n.csv. Output: 99S_judgement_*.csv
 import os, json, numpy as np, pandas as pd
 from scipy.stats import spearmanr
-HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); SEL = os.path.dirname(ROOT); RAW = os.path.join(SEL, "kosis_raw")
+HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); SEL = os.path.dirname(ROOT); RAW = os.environ["ST_KOSIS_RAW"]
 rows = []
 for y in range(2010, 2026):
     D = pd.DataFrame(json.load(open(os.path.join(RAW, "DT_35006_N009", f"{y}.json"))))

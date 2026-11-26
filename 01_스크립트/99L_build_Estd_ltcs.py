@@ -3,10 +3,11 @@
 #  general-district rows to the 229 districts (code-based linkage; double counting of city and sub-district rows prevented; district sum = national total asserted).
 #  Expected counts by indirect standardisation in 2 sexes x 5 age bands (65-69 ... 85+) with national rates (DT_35006_N036; 2013 rates used for 2011-2012)
 #  and resident population by sex and age (ST_FBDZIP); sum of E = sum of cases by year; no added constant. Alternative E: sex-only, age-only, crude.
+#  Missing 85+ age cells are set to 0 only after the district total is asserted to equal the sum of the age bands. ST_EFIX2015=1 also writes E with fixed 2015 national rates (ST_OUT_EFIX).
 #  Output: 02_패널/LTCS_Estd3.csv; checks in 04_분석/LTCS/gate/E/
 import os, sys, json, glob, sqlite3, importlib.util, unicodedata
 import numpy as np, pandas as pd
-HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); PAN = os.path.join(ROOT, "02_패널"); SEL = os.path.join(ROOT, "04_분석", "LTCS", "gate", "E"); os.makedirs(SEL, exist_ok=True)
+HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); PAN = os.path.join(ROOT, "02_패널"); SEL = os.environ.get("ST_OUT_SEL", os.path.join(ROOT, "04_분석", "LTCS", "gate", "E")); os.makedirs(SEL, exist_ok=True)
 RAW = os.environ["ST_KOSIS_RAW"]
 DB = os.environ["ST_REF_DATASET"]
 def _load(nm, f):
@@ -22,7 +23,7 @@ K2R = dict(zip(base.key, base.fbd_region))
 BANDS18 = [f"{lo}-{lo+4}" for lo in range(0, 85, 5)] + ["85+"]; OLD = ["65-69", "70-74", "75-79", "80-84", "85+"]
 SIDO_HDR = {k for k in cw.SIDO_STD if len(k) >= 3 and (k.endswith("시") or k.endswith("도"))}
 FIVE = [f"{lo}-{lo+4}세" for lo in range(0, 85, 5)]; OLD85 = ["85-89세", "90-94세", "95-99세", "100세 이상"]
-EXTRA = {("충청북도", "청원군"): "충청북도|청주시"}; rows = []
+EXTRA = {("충청북도", "청원군"): "충청북도|청주시"}; rows = []; NMISS85 = []
 for y in YEARS:
     d = pd.read_csv(os.path.join(FBDZIP, f"{y}.csv"), encoding="cp949", dtype=str)
     d["행정구역별"] = d["행정구역별"].map(NFC).str.strip(); d["연령별"] = d["연령별"].map(NFC).str.strip()
@@ -44,8 +45,11 @@ for y in YEARS:
         for s in SEXES:
             a = g.set_index("연령별")[s]
             if pd.isna(a.get("계", np.nan)): continue
-            f = a.reindex(FIVE); o = a.reindex(OLD85).fillna(0); assert f.notna().all(), (y, nm, s)
+            f = a.reindex(FIVE); o = a.reindex(OLD85); assert f.notna().all(), (y, nm, s)
+            NMISS85.append(int(o.isna().sum())); assert abs(a["계"] - f.sum() - o.fillna(0).sum()) < 0.5, ("missing 85+ cells are not true zeros", y, nm, s, a["계"], f.sum(), o.sum())
+            o = o.where(o.notna(), 0.0)
             rows.append({"year": y, "sex": s, "key": NFC(key), **{b: f[b + "세"] for b in BANDS18[:-1]}, "85+": o.sum()})
+print(f"[99L] missing 85+ age cells: {sum(NMISS85)} in {len(NMISS85)} blocks; each block total equals the sum of its age bands (true zeros)")
 POP = pd.DataFrame(rows).groupby(["year", "key", "sex"], as_index=False).sum(numeric_only=True)
 assert set(POP.key) >= PKEYS, sorted(PKEYS - set(POP.key))
 cwn = POP[(POP.key == NFC("경상남도|창원시")) & (POP.year == 2023)][BANDS18].sum().sum()
@@ -196,4 +200,12 @@ P["pop85_share_of65"] = p85 / off * 100; P["pop85_share"] = p85 / totpop * 100; 
 for c in ["E_std", "E_sex", "E_std_age", "E_crude"]:
     assert (P.groupby("year")[c].sum() - P.groupby("year").cases.sum()).abs().max() < 1e-6 * P.cases.sum() and (P[c] > 0).all(), c
 print(f"[99L] LTCS 행 {len(P)}, 합 {int(P.cases.sum()):,}, 0칸 {(P.cases == 0).sum()}, E_sex/E_std {np.round(np.percentile(P.E_sex / P.E_std, [0, 50, 100]), 3)}, E_age/E_std {np.round(np.percentile(P.E_std_age / P.E_std, [0, 50, 100]), 3)}")
-P[["year", "fbd_region", "offset", "cases", "E_std", "E_sex", "E_std_age", "E_crude", "pop65_share", "pop85_share", "pop85_share_of65", "pop80_share_fbd5", "pop_total_fbd5"]].to_csv(os.path.join(PAN, "LTCS_Estd3.csv"), index=False, encoding="utf-8-sig")
+P[["year", "fbd_region", "offset", "cases", "E_std", "E_sex", "E_std_age", "E_crude", "pop65_share", "pop85_share", "pop85_share_of65", "pop80_share_fbd5", "pop_total_fbd5"]].to_csv(os.environ.get("ST_OUT_PANEL", os.path.join(PAN, "LTCS_Estd3.csv")), index=False, encoding="utf-8-sig")
+if os.environ.get("ST_EFIX2015") == "1":
+    Efix = np.zeros(len(P))
+    for s in SEXES:
+        X = X0[s]; r15 = RATES[T].xs(s, level="sex").loc[2015, bands].values.astype(float)
+        Efix += (X[bands].values * r15).sum(1)
+    P["E_fix2015"] = Efix; assert (P.E_fix2015 > 0).all()
+    print(f"[99L] E_fix2015 합/cases 합 연도별: {(P.groupby('year').E_fix2015.sum() / P.groupby('year').cases.sum()).round(4).to_dict()}")
+    P[["year", "fbd_region", "cases", "E_std", "E_fix2015"]].to_csv(os.environ["ST_OUT_EFIX"], index=False, encoding="utf-8-sig")
