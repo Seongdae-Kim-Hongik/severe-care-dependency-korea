@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below."
+type: software
+title: "Is severe care dependency in later life a metropolitan rather than a rural burden in Korea? Evidence from long-term care insurance certifications — analysis code"
+authors:
+  - family-names: Kim
+    given-names: Seongdae
+    affiliation: Hongik University
+    orcid: "https://orcid.org/0000-0002-1525-0091"
+version: "1.0.0"
+date-released: 2026-11-26
+license: MIT
+repository-code: "https://github.com/Seongdae-Kim-Hongik/severe-care-dependency-korea"

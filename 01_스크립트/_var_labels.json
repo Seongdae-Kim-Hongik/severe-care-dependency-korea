@@ -1,0 +1,116 @@
+[
+ {
+  "column": "kchs__DT_H_OBE_OBE__SR",
+  "key": "obesity_rate",
+  "label_en": "Obesity rate (self-reported SR %)",
+  "label_ko": "비만율(자가보고)"
+ },
+ {
+  "column": "ext__pop80_share",
+  "key": "pop80_share",
+  "label_en": "Population aged 80+ share (%)",
+  "label_ko": "80세 이상 인구 비율"
+ },
+ {
+  "column": "ext__outside_care_share",
+  "key": "outside_care_share",
+  "label_en": "Out-of-district outpatient share (%)",
+  "label_ko": "관외 외래 진료 비율"
+ },
+ {
+  "column": "ext__basic_livelihood_rate",
+  "key": "basic_livelihood_rate",
+  "label_en": "Basic-livelihood security recipient rate (%)",
+  "label_ko": "국민기초생활보장 수급자 비율"
+ },
+ {
+  "column": "ext__tertiary_educated_share",
+  "key": "tertiary_educated_share",
+  "label_en": "Tertiary-educated share (%)",
+  "label_ko": "고등교육 이수 비율"
+ },
+ {
+  "column": "ext__ltc_hospitals_per100k_65",
+  "key": "ltc_hospitals_per_100k_65",
+  "label_en": "Long-term care hospitals per 100k aged 65+",
+  "label_ko": "요양병원 수(65세 이상 10만 명당)"
+ },
+ {
+  "column": "ext__urban_population_share",
+  "key": "urban_population_share",
+  "label_en": "Urban-zone population share (%)",
+  "label_ko": "도시지역 인구 비율"
+ },
+ {
+  "column": "ext__physicians_per_1000",
+  "key": "physicians_per_1000",
+  "label_en": "Physicians per 1000",
+  "label_ko": "인구 천명당 의사 수"
+ },
+ {
+  "column": "ext__sex_ratio",
+  "key": "sex_ratio",
+  "label_en": "Sex ratio (men per 100 women)",
+  "label_ko": "남녀성비"
+ },
+ {
+  "column": "ext__fiscal_independence",
+  "key": "fiscal_independence",
+  "label_en": "Fiscal independence (%)",
+  "label_ko": "재정자주도"
+ },
+ {
+  "column": "ext__hit_and_run_rate",
+  "key": "hit_and_run_rate",
+  "label_en": "Hit-and-run traffic accident rate (%)",
+  "label_ko": "뺑소니 교통사고율"
+ },
+ {
+  "column": "ext__traffic_culture_index",
+  "key": "traffic_culture_index",
+  "label_en": "Traffic culture index",
+  "label_ko": "교통문화지수"
+ },
+ {
+  "column": "ext__fires_per_10000",
+  "key": "fires_per_10000",
+  "label_en": "Fires per 10 000 residents",
+  "label_ko": "주민 만명당 화재 발생 건수"
+ },
+ {
+  "column": "ext__walking_rate",
+  "key": "walking_practice_rate",
+  "label_en": "Walking practice rate (SR %)",
+  "label_ko": "걷기 실천율"
+ },
+ {
+  "column": "ext__obesity_rate",
+  "key": "obesity_rate_sr",
+  "label_en": "Obesity rate (self-reported SR %)",
+  "label_ko": "비만율(자가보고)"
+ },
+ {
+  "column": "ext__high_risk_drinking",
+  "key": "high_risk_drinking_rate",
+  "label_en": "High-risk drinking rate (SR %)",
+  "label_ko": "고위험음주율"
+ },
+ {
+  "column": "ext__smoking_rate",
+  "key": "current_smoking_rate",
+  "label_en": "Current smoking rate (SR %)",
+  "label_ko": "현재흡연율"
+ },
+ {
+  "column": "ext__screening_uptake",
+  "key": "screening_uptake",
+  "label_en": "Health screening uptake (%)",
+  "label_ko": "건강검진 수검률"
+ },
+ {
+  "column": "ext__living_alone_elderly",
+  "key": "older_single_household_share",
+  "label_en": "Older single-person households (%)",
+  "label_ko": "독거노인 가구 비율"
+ }
+]

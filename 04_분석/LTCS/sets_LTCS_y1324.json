@@ -1,0 +1,302 @@
+{
+ "tag": "LTCS",
+ "outcome_column": "ext__ltcs_cases",
+ "outcome_label_en": "Residents aged 65+ certified at long-term care grade 1 or 2 under Korea's long-term care insurance (NHIS long-term care statistics DT_35006_N009, annual)",
+ "disease_en": "Severe care dependency (long-term care grade 1-2 certification) in later life",
+ "disease_ko": "65세 이상 장기요양 1–2등급 인정(중증 돌봄 의존)",
+ "pathway": "care-dependency epidemiology set: certification = need x application and assessment pathway. Care supply and access (long-term care hospitals, hospitals); application and recognition pathway (tertiary education, older people living alone, stroke and dementia burden); deprivation (public assistance, medical aid type 1); survival (all-cause mortality); walking as one factor among several",
+ "pool_note": "Number of long-term care institutions is not in the reference dataset; long-term care benefit users are excluded (circular with the outcome); outside-district care share is sensitivity-only; public health centre use is sensitivity-only (2023-2024 break)",
+ "selection_basis": "Outcome selected by spatial screening criteria fixed before results (adjusted Moran's I >= 0.25, permutation p < 0.001, urban-rural R2 < 0.40, BYM2 mixing >= 0.5, persistence >= 0.5)",
+ "offset": "ext__ltcs_pop65",
+ "exclude_years": [
+  2011,
+  2012
+ ],
+ "forced": [
+  "ext__urban_population_share",
+  "ext__physicians_per_1000",
+  "ext__sex_ratio",
+  "ext__fiscal_independence",
+  "ext__pop80_share"
+ ],
+ "negative_controls": [
+  "ext__hit_and_run_rate",
+  "ext__traffic_culture_index",
+  "ext__fires_per_10000"
+ ],
+ "offset_E_column": "E_std",
+ "offset_E_file": "LTCS_Estd3.csv",
+ "offset_E_label": "sex-and-age-standardised expected grade 1-2 long-term care certifications among residents aged 65+, 2 sexes x 5 age bands (65-69, 70-74, 75-79, 80-84, 85+) (national rates DT_35006_N036 2013-2024, 2013 rates for 2011-2012; district resident population by sex and age), 2011-2024",
+ "graph": "Principal adjacency graph in INLA graph format, read from the ST_GRAPH environment variable (229 districts, 593 edges, boundary-file order)",
+ "population_override": [
+  {
+   "year": 2023,
+   "fbd_region": "경상남도창원시",
+   "population": 1009038,
+   "source": "KOSIS DT_1YL20651E, 2023 total for the integrated Changwon city"
+  }
+ ],
+ "sensitivity_only_extra": [
+  "ext__public_health_use_rate",
+  "ext__care_institutions_per100k",
+  "ext__beds_per_1000",
+  "ext__outside_care_share",
+  "ext__pop85_share",
+  "ext__obesity_rate",
+  "ext__smoking_rate",
+  "ext__high_risk_drinking",
+  "ext__screening_uptake",
+  "ext__alz_death_sir"
+ ],
+ "version": "std3 care-dependency epidemiology set (care supply and access, application and recognition pathway, deprivation, survival; walking as one factor among several), 2011-2024",
+ "fixed_on": "hashed (SHA-256) and recorded in the analysis log before the covariate models were fitted",
+ "sets": {
+  "S1_narrative_full": [
+   "ext__ltc_hospitals_per100k_65",
+   "ext__hospitals_per100k",
+   "ext__tertiary_educated_share",
+   "ext__living_alone_elderly",
+   "ext__mort_stroke_asr",
+   "ext__alz_death_sir_ma3",
+   "ext__basic_livelihood_rate",
+   "ext__medical_aid1_per100k",
+   "ext__mort_allcause_asr",
+   "ext__walking_rate"
+  ],
+  "S2_core": [
+   "ext__ltc_hospitals_per100k_65",
+   "ext__tertiary_educated_share",
+   "ext__living_alone_elderly",
+   "ext__mort_stroke_asr",
+   "ext__basic_livelihood_rate",
+   "ext__mort_allcause_asr"
+  ],
+  "S3_supply_access": [
+   "ext__ltc_hospitals_per100k_65",
+   "ext__hospitals_per100k"
+  ],
+  "S4_application_path": [
+   "ext__tertiary_educated_share",
+   "ext__living_alone_elderly",
+   "ext__mort_stroke_asr",
+   "ext__alz_death_sir_ma3"
+  ],
+  "S5_deprivation": [
+   "ext__basic_livelihood_rate",
+   "ext__medical_aid1_per100k"
+  ],
+  "S6_survival_health": [
+   "ext__mort_allcause_asr",
+   "ext__mort_stroke_asr",
+   "ext__alz_death_sir_ma3",
+   "ext__walking_rate"
+  ]
+ },
+ "transform": {
+  "ext__urban_population_share": "none",
+  "ext__physicians_per_1000": "none",
+  "ext__sex_ratio": "none",
+  "ext__fiscal_independence": "none",
+  "ext__pop80_share": "none",
+  "ext__hit_and_run_rate": "none",
+  "ext__traffic_culture_index": "none",
+  "ext__fires_per_10000": "none",
+  "ext__public_health_use_rate": "none",
+  "ext__care_institutions_per100k": "none",
+  "ext__beds_per_1000": "none",
+  "ext__outside_care_share": "none",
+  "ext__pop85_share": "none",
+  "ext__obesity_rate": "none",
+  "ext__smoking_rate": "none",
+  "ext__high_risk_drinking": "none",
+  "ext__screening_uptake": "none",
+  "ext__alz_death_sir": "none",
+  "ext__ltc_hospitals_per100k_65": "none",
+  "ext__hospitals_per100k": "none",
+  "ext__tertiary_educated_share": "none",
+  "ext__living_alone_elderly": "none",
+  "ext__mort_stroke_asr": "none",
+  "ext__alz_death_sir_ma3": "none",
+  "ext__basic_livelihood_rate": "none",
+  "ext__medical_aid1_per100k": "none",
+  "ext__mort_allcause_asr": "none",
+  "ext__walking_rate": "none"
+ },
+ "expected_direction": {
+  "ext__ltc_hospitals_per100k_65": "- (long-term care hospitals per 100 000 aged 65+: substitution outside long-term care insurance; alternative + = supply-induced referral; two-sided interpretation fixed)",
+  "ext__hospitals_per100k": "+ (hospitals and general hospitals per 100 000: diagnosis and referral access; alternative - = acute inpatient substitution)",
+  "ext__tertiary_educated_share": "+ (tertiary-educated share: information and application capacity; alternative - = better health; census interpolated, 2021-24 carried forward)",
+  "ext__living_alone_elderly": "+ (older single-person households: absence of family care leads to formal applications; 2011-14 carried back)",
+  "ext__mort_stroke_asr": "+ (cerebrovascular age-standardised mortality: stroke burden, severe dependency)",
+  "ext__alz_death_sir_ma3": "+ (Alzheimer disease death SIR, 3-year moving average: dementia burden)",
+  "ext__basic_livelihood_rate": "+ (public assistance recipient rate: deprivation, multimorbidity; alternative - = pro-rich gradient of formal care use; two-sided)",
+  "ext__medical_aid1_per100k": "+ (medical aid type 1 patients per 100 000: deprivation; alternative - = application barriers; two-sided)",
+  "ext__mort_allcause_asr": "- (all-cause age-standardised mortality: survival is needed to reach severe dependency)",
+  "ext__walking_rate": "- (walking practice: functional maintenance, one factor among several)"
+ },
+ "evidence": {
+  "ext__ltc_hospitals_per100k_65": "literature keys: kim2015delivery; kim2020variations; sakong2017panel; seo2021effect",
+  "ext__hospitals_per100k": "literature keys: jin2022regional; sakong2017panel; seo2021effect",
+  "ext__tertiary_educated_share": "literature keys: park2021determinants; park2023cognitive; kreft2016expansion",
+  "ext__living_alone_elderly": "literature keys: lagergren2014comparing; sakong2017panel",
+  "ext__mort_stroke_asr": "literature keys: kang2011factors",
+  "ext__alz_death_sir_ma3": "literature keys: kang2011factors; park2023cognitive",
+  "ext__basic_livelihood_rate": "literature keys: davies2025arealevel; wang2025incidence; lera2020socioeconomic",
+  "ext__medical_aid1_per100k": "literature keys: noh2026socioeconomic; davies2025arealevel; lera2020socioeconomic",
+  "ext__mort_allcause_asr": "literature keys: noh2026socioeconomic; yoshikawa2023regional",
+  "ext__walking_rate": "literature keys: takahashi2022risk"
+ },
+ "rules": {
+  "vif_action": "drop",
+  "likelihood": "Poisson or negative binomial, whichever forced-adjustment-only model has the lower WAIC",
+  "set_choice": "Lowest WAIC; within 4 WAIC points, the set with fewer variables",
+  "credible": "95% CrI excludes 1",
+  "vif_drop": 10,
+  "multiverse_specs": 200,
+  "main_model_note": "Principal model = S1_narrative_full (10 hypothesised characteristics + 5 fixed adjustments); the set is not changed after fitting; candidates with VIF > 10 are removed by 80 (vif_action drop); the chain stops if a fixed adjustment keeps VIF > 10.",
+  "years": [
+   2011,
+   2024
+  ],
+  "windows": {
+   "W1_2011-15": [
+    2011,
+    2015
+   ],
+   "W2_2016-19": [
+    2016,
+    2019
+   ],
+   "W3_2020-24": [
+    2020,
+    2024
+   ]
+  },
+  "covid_post_from": 2020,
+  "windows_note": "Three periods fixed before results were seen."
+ },
+ "note": "LTCS = residents aged 65+ certified at long-term care insurance grade 1 (95 points or more) or grade 2 (75 to under 95 points); the grade 1-2 thresholds are unchanged 2008-2025. Grade 5 (2014) and the cognitive-support grade (2018) were added below 75 points (national grade 1-2 ratio 2013 to 2014: 1.009).",
+ "extra_columns": {
+  "ext__ltcs_cases": [
+   "EXT_canonical_pool_LTCS.csv",
+   "ltcs_cases"
+  ],
+  "ext__ltcs_pop65": [
+   "EXT_canonical_pool_LTCS.csv",
+   "ltcs_pop65"
+  ],
+  "ext__urban_population_share": [
+   "EXT_canonical_pool_LTCS.csv",
+   "urban_population_share"
+  ],
+  "ext__physicians_per_1000": [
+   "EXT_canonical_pool_LTCS.csv",
+   "physicians_per_1000"
+  ],
+  "ext__sex_ratio": [
+   "EXT_canonical_pool_LTCS.csv",
+   "sex_ratio"
+  ],
+  "ext__fiscal_independence": [
+   "EXT_canonical_pool_LTCS.csv",
+   "fiscal_independence"
+  ],
+  "ext__pop80_share": [
+   "EXT_canonical_pool_LTCS.csv",
+   "pop80_share"
+  ],
+  "ext__hit_and_run_rate": [
+   "EXT_canonical_pool_LTCS.csv",
+   "hit_and_run_rate"
+  ],
+  "ext__traffic_culture_index": [
+   "EXT_canonical_pool_LTCS.csv",
+   "traffic_culture_index"
+  ],
+  "ext__fires_per_10000": [
+   "EXT_canonical_pool_LTCS.csv",
+   "fires_per_10000"
+  ],
+  "ext__public_health_use_rate": [
+   "EXT_canonical_pool_LTCS.csv",
+   "public_health_use_rate"
+  ],
+  "ext__care_institutions_per100k": [
+   "EXT_canonical_pool_LTCS.csv",
+   "care_institutions_per100k"
+  ],
+  "ext__beds_per_1000": [
+   "EXT_canonical_pool_LTCS.csv",
+   "beds_per_1000"
+  ],
+  "ext__outside_care_share": [
+   "EXT_canonical_pool_LTCS.csv",
+   "outside_care_share"
+  ],
+  "ext__pop85_share": [
+   "EXT_canonical_pool_LTCS.csv",
+   "pop85_share"
+  ],
+  "ext__obesity_rate": [
+   "EXT_canonical_pool_LTCS.csv",
+   "obesity_rate"
+  ],
+  "ext__smoking_rate": [
+   "EXT_canonical_pool_LTCS.csv",
+   "smoking_rate"
+  ],
+  "ext__high_risk_drinking": [
+   "EXT_canonical_pool_LTCS.csv",
+   "high_risk_drinking"
+  ],
+  "ext__screening_uptake": [
+   "EXT_canonical_pool_LTCS.csv",
+   "screening_uptake"
+  ],
+  "ext__alz_death_sir": [
+   "EXT_canonical_pool_LTCS.csv",
+   "alz_death_sir"
+  ],
+  "ext__ltc_hospitals_per100k_65": [
+   "EXT_canonical_pool_LTCS.csv",
+   "ltc_hospitals_per100k_65"
+  ],
+  "ext__hospitals_per100k": [
+   "EXT_canonical_pool_LTCS.csv",
+   "hospitals_per100k"
+  ],
+  "ext__tertiary_educated_share": [
+   "EXT_canonical_pool_LTCS.csv",
+   "tertiary_educated_share"
+  ],
+  "ext__living_alone_elderly": [
+   "EXT_canonical_pool_LTCS.csv",
+   "living_alone_elderly"
+  ],
+  "ext__mort_stroke_asr": [
+   "EXT_canonical_pool_LTCS.csv",
+   "mort_stroke_asr"
+  ],
+  "ext__alz_death_sir_ma3": [
+   "EXT_canonical_pool_LTCS.csv",
+   "alz_death_sir_ma3"
+  ],
+  "ext__basic_livelihood_rate": [
+   "EXT_canonical_pool_LTCS.csv",
+   "basic_livelihood_rate"
+  ],
+  "ext__medical_aid1_per100k": [
+   "EXT_canonical_pool_LTCS.csv",
+   "medical_aid1_per100k"
+  ],
+  "ext__mort_allcause_asr": [
+   "EXT_canonical_pool_LTCS.csv",
+   "mort_allcause_asr"
+  ],
+  "ext__walking_rate": [
+   "EXT_canonical_pool_LTCS.csv",
+   "walking_rate"
+  ]
+ },
+ "sens_note": "sensitivity: 2013-2024 (years with national age-specific rates)"
+}

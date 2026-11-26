@@ -1,0 +1,30 @@
+{
+ "title": "Is severe care dependency in later life a metropolitan rather than a rural burden in Korea? Evidence from long-term care insurance certifications — analysis code",
+ "upload_type": "software",
+ "version": "1.0.0",
+ "license": "MIT",
+ "access_right": "open",
+ "creators": [
+  {
+   "name": "Kim, Seongdae",
+   "affiliation": "Hongik University",
+   "orcid": "0000-0002-1525-0091"
+  }
+ ],
+ "description": "Code-only archive of a district-level analysis of long-term care insurance grade 1-2 certifications among residents aged 65+ across 229 districts of South Korea, 2011-2024 (Bayesian spatiotemporal models in R-INLA). No data are included.",
+ "keywords": [
+  "long-term care",
+  "care dependency",
+  "older adults",
+  "spatiotemporal",
+  "INLA",
+  "Korea"
+ ],
+ "related_identifiers": [
+  {
+   "identifier": "https://github.com/Seongdae-Kim-Hongik/severe-care-dependency-korea/tree/v1.0.0",
+   "relation": "isSupplementTo",
+   "scheme": "url"
+  }
+ ]
+}
